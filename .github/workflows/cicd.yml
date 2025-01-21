@@ -1,20 +1,20 @@
 name: CI/CD for Dockerized Flask App
 
-on:
+on: # Specifies the events that trigger the workflow
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
 
 jobs:
-  dockerbuild:
+  dockerbuild: # First job to build the Docker image.
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: Build The Docker Image
       run: docker build . --file DockerFile --tag workflow-test:$(date +%s)
 
-  build-and-test:
+  build-and-test: # Second job to install dependencies and run tests
     runs-on: ubuntu-latest
 
     steps:
@@ -35,7 +35,7 @@ jobs:
       run: |
         pytest
 
-  build-and-publish:
+  build-and-publish: # Final job to build and push the Docker image.
     needs: build-and-test
     runs-on: ubuntu-latest
 
